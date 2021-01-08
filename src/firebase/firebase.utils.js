@@ -15,6 +15,36 @@ const config = {
   measurementId: 'G-24GRRBM1KR',
 };
 
+// make async API request
+export const createUserProfileDocument = async (userAuth, additionalData) => {
+  if (!userAuth) return;
+  // if there is a user, query firestore for that user's document
+  const userRef = firestore.doc(`users/${userAuth.uid}`);
+
+  const userSnapshot = await userRef.get();
+
+  // if the snapshot document does not exist, create piece of data using user ref
+  if (!userSnapshot.exists) {
+    const { displayName, email } = userAuth;
+    const createdAt = new Date();
+
+    // async request to store data - make object including data from userAuth object and other add'l data
+    try {
+      await userRef.set({
+        displayName,
+        email,
+        createdAt,
+        ...additionalData,
+      });
+    } catch (error) {
+      console.log('error creating user', error.message);
+    }
+  }
+
+  // return userRef object if we need it for something else
+  return userRef;
+};
+
 // initialize firebase using the above config object
 firebase.initializeApp(config);
 

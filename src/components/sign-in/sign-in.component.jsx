@@ -7,6 +7,7 @@ import { signInWithGoogle } from '../../firebase/firebase.utils';
 
 import './sign-in.styles.scss';
 
+// class component because we need to store what the user is typing
 class SignIn extends Component {
   constructor(props) {
     super(props);
